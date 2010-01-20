@@ -1,0 +1,18 @@
+ActsAsLabel
+===========
+
+Introduction goes here.
+
+
+Example
+=======
+
+class BillingFrequency < ActiveRecord::Base
+
+	acts_as_label :default => :monthly
+
+end
+
+
+
+Copyright (c) 2010 Coroutine LLC, released under the MIT license
