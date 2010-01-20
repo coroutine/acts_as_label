@@ -1,0 +1,45 @@
+= Acts As Label
+
+
+== Description
+
+This acts_as extension implements a system label and a friendly label on a class and centralizes
+the logic for performing validations and accessing items by system label.
+
+
+
+== Usage
+
+If you just want validations and system label accessors, simply add acts_as_label to the model.
+
+	class Role < ActiveRecord::Base
+		acts_as_label
+	end
+	
+The plugin accepts three optional parameters.
+
+- +system_label_column+: specifies the name of the column to use for the system label (default: system_label)
+- +label_column+: specifies the name of the column to use for the label (default: label)
+- +default+: specifies the system label value to use as the default record
+
+	class Role < ActiveRecord::Base
+		acts_as_label :system_label_column => :key, :label_column => :name, :default => :guest
+	end
+
+If you use the plugin within a single table inheritance (STI) design, the easiest way to specify a default
+record is by implementing a class method on the subclass.
+
+	class Label < ActiveRecord::Base
+		acts_as_label
+	end
+	
+	class BillingFrequency < Label
+		self.default
+			BillingFrequency.monthly
+		end
+	end
+
+
+== License
+
+Copyright (c) 2010 Coroutine LLC, released under the MIT license

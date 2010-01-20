@@ -101,11 +101,11 @@ module Coroutine                      #:nodoc:
             # Add custom method missing functionality to perform find by system label lookup. If 
             # nothing is found, it delegates the call to the original method_missing.
             def self.label_method_missing(method, *args, &block)
-              record = BillingFrequency.find(:first, :conditions => ["#{system_label_column} = ?", method.to_s.upcase])
+              record = self.find(:first, :conditions => ["#{system_label_column} = ?", method.to_s.upcase])
               if record
                 return record
               else
-                old_method_missing(method, *args, &block)
+                self.old_method_missing(method, *args, &block)
               end
             end
             
