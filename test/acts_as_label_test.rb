@@ -203,7 +203,7 @@ class ActsAsLabelTest < Test::Unit::TestCase
   
   
   #---------------------------------------------
-  # test method missing accessors
+  # test method missing
   #---------------------------------------------
   
   def test_method_missing_accessors
@@ -219,6 +219,19 @@ class ActsAsLabelTest < Test::Unit::TestCase
     
     # test default with specified system label
     assert_equal Framework.find(:first, :conditions => ["system_name = ?", "RUBY_ON_RAILS"]), Framework.default
+    
+  end
+  
+  
+  def test_method_missing_finders
+    
+    # dynamic find on stand-alone model
+    record = Framework.find_by_system_name("RUBY_ON_RAILS")
+    assert !record.nil?
+    
+    #dynamic find on sti model
+    record = Role.find_by_system_label("SUPERUSER")
+    assert !record.nil?
     
   end
   

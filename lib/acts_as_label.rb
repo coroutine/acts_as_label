@@ -7,12 +7,12 @@ module Coroutine                      #:nodoc:
       end
 
       
-      # = Description
+      # == Description
       #
       # This +acts_as+ extension implements a system label and a friendly label on a class and centralizes
       # the logic for performing validations and accessing items by system label.
       #
-      # = Simple Example:
+      # == Simple Example:
       #
       #   class BillingFrequency < ActiveRecord::Base
       #     has_many :subscriptions
@@ -27,7 +27,7 @@ module Coroutine                      #:nodoc:
       #   subscription.billing_frequency = BillingFrequency.default
       #
       #
-      # = STI Example:
+      # == STI Example:
       #
       #   class Label < ActiveRecord::Base
       #     acts_as_label
@@ -100,19 +100,18 @@ module Coroutine                      #:nodoc:
             
             # Add custom method missing functionality to perform find by system label lookup. If 
             # nothing is found, it delegates the call to the original method_missing.
-            def self.label_method_missing(method, *args, &block)
+            def self.method_missing_with_label(method, *args, &block)
               record = self.find(:first, :conditions => ["#{system_label_column} = ?", method.to_s.upcase])
               if record
                 return record
               else
-                self.old_method_missing(method, *args, &block)
+                method_missing_without_label(method, *args, &block)
               end
             end
             
             # Add method missing alias
             class << self
-              alias_method :original_method_missing,  :method_missing
-              alias_method :method_missing,           :label_method_missing
+              alias_method_chain :method_missing, :label       
             end
                
             # Add class method to return default record, if needed

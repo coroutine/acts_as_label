@@ -19,9 +19,9 @@ If you just want validations and system label accessors, simply add acts_as_labe
 	
 The plugin accepts three optional parameters.
 
-+system_label_column+: specifies the name of the column to use for the system label (default: system_label)
-+label_column+: specifies the name of the column to use for the label (default: label)
-+default+: specifies the system label value to use as the default record
++system_label_column+:: specifies the name of the column to use for the system label (default: system_label)
++label_column+:: specifies the name of the column to use for the label (default: label)
++default+:: specifies the system label value to use as the default record
 
   class Role < ActiveRecord::Base
     acts_as_label :system_label_column => :key, :label_column => :name, :default => :guest
@@ -37,8 +37,8 @@ record is by implementing a class method on the subclass.
 	
   class BillingFrequency < Label
     self.default
-	  BillingFrequency.monthly
-	end
+      BillingFrequency.monthly
+    end
   end
 
 
