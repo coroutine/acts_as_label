@@ -7,50 +7,54 @@ module Coroutine                      #:nodoc:
       end
 
       
-      # == Description
-      #
-      # This +acts_as+ extension implements a system label and a friendly label on a class and centralizes
-      # the logic for performing validations and accessing items by system label.
-      #
-      # == Simple Example:
-      #
-      #   class BillingFrequency < ActiveRecord::Base
-      #     has_many :subscriptions
-      #     acts_as_label :default => :monthly
-      #   end
-      #
-      #   class Subscription < ActiveRecord::Base
-      #     belongs_to :billing_frequency
-      #   end
-      #
-      #   subscription.billing_frequency = BillingFrequency.monthly
-      #   subscription.billing_frequency = BillingFrequency.default
-      #
-      #
-      # == STI Example:
-      #
-      #   class Label < ActiveRecord::Base
-      #     acts_as_label
-      #   end
-      #
-      #   class BillingFrequency < Label
-      #     has_many :subscriptions
-      #     def self.default
-      #       BillingFrequency.monthly
-      #     end
-      #   end
-      #
-      #   class Subscription < ActiveRecord::Base
-      #     belongs_to :billing_frequency
-      #   end
-      #
-      #   subscription.billing_frequency = BillingFrequency.monthly
-      #   subscription.billing_frequency = BillingFrequency.default
-      #
       module ClassMethods
       
         
-        # Configuration options are:
+        # == Description
+        #
+        # This +acts_as+ extension implements a system label and a friendly label on a class and centralizes
+        # the logic for performing validations and accessing items by system label.
+        #
+        #
+        # == Usage
+        #
+        # Simple Example
+        #
+        #   class BillingFrequency < ActiveRecord::Base
+        #     has_many :subscriptions
+        #     acts_as_label :default => :monthly
+        #   end
+        #
+        #   class Subscription < ActiveRecord::Base
+        #     belongs_to :billing_frequency
+        #   end
+        #
+        #   subscription.billing_frequency = BillingFrequency.monthly
+        #   subscription.billing_frequency = BillingFrequency.default
+        #
+        #
+        # STI Example:
+        #
+        #   class Label < ActiveRecord::Base
+        #     acts_as_label
+        #   end
+        #
+        #   class BillingFrequency < Label
+        #     has_many :subscriptions
+        #     def self.default
+        #       BillingFrequency.monthly
+        #     end
+        #   end
+        #
+        #   class Subscription < ActiveRecord::Base
+        #     belongs_to :billing_frequency
+        #   end
+        #
+        #   subscription.billing_frequency = BillingFrequency.monthly
+        #   subscription.billing_frequency = BillingFrequency.default
+        #
+        #
+        # == Configuration
         #
         # * +system_label_cloumn+ - specifies the column name to use for storing the system label (default: +system_label+)
         # * +label_column+ - specifies the column name to use for storing the label (default: +label+)
@@ -129,36 +133,32 @@ module Coroutine                      #:nodoc:
             
             
             # Add all the instance methods
-            include InstanceMethods
+            include Coroutine::Acts::Label::InstanceMethods
 
           end
-          
         end  
       end
 
-
-
-      #--------------------------------------------------------------------------------------------
-      # These methods are mixed into any instance of a class that implements +acts_as_label+.
-      #--------------------------------------------------------------------------------------------
+    
       module InstanceMethods
-        
+      
         # This method overrides the to_s method to return the friendly label value.
         #
         def to_s
           self.send("#{label_column}")
         end
-        
-        
+      
+      
         private
-        
+      
         # This method updates the system label attribute to ensure it is uppercase.
         #
         def upcase_system_label_value
           update_attribute("#{system_label_column}", self.send("#{system_label_column}").to_s.upcase)
         end
-      
-      end 
+    
+      end
+    
     end
   end
 end
