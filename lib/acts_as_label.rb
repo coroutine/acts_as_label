@@ -76,12 +76,12 @@ module Coroutine                      #:nodoc:
           class_eval do
             
             # Add inheritable accessors
-            write_inheritable_attribute :system_label_column,   system_label
-            class_inheritable_reader    :system_label_column
-            write_inheritable_attribute :label_column,          label
-            class_inheritable_reader    :label_column
-            write_inheritable_attribute :default_system_label,  default
-            class_inheritable_reader    :default_system_label
+            write_inheritable_attribute :acts_as_label_system_label_column,   system_label
+            class_inheritable_reader    :acts_as_label_system_label_column
+            write_inheritable_attribute :acts_as_label_label_column,          label
+            class_inheritable_reader    :acts_as_label_label_column
+            write_inheritable_attribute :acts_as_label_default_system_label,  default
+            class_inheritable_reader    :acts_as_label_default_system_label
           
             
             # Add validations
@@ -105,7 +105,7 @@ module Coroutine                      #:nodoc:
             # Add custom method missing functionality to perform find by system label lookup. If 
             # nothing is found, it delegates the call to the original method_missing.
             def self.method_missing_with_label(method, *args, &block)
-              record = self.find(:first, :conditions => ["#{system_label_column} = ?", method.to_s.upcase])
+              record = self.find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", method.to_s.upcase])
               if record
                 return record
               else
@@ -126,7 +126,7 @@ module Coroutine                      #:nodoc:
                 end
               else
                 def self.default
-                  self.send("#{default_system_label}")
+                  self.send("#{acts_as_label_default_system_label}")
                 end
               end
             end
@@ -145,7 +145,7 @@ module Coroutine                      #:nodoc:
         # This method overrides the to_s method to return the friendly label value.
         #
         def to_s
-          self.send("#{label_column}")
+          self.send("#{acts_as_label_label_column}")
         end
       
       
@@ -154,7 +154,7 @@ module Coroutine                      #:nodoc:
         # This method updates the system label attribute to ensure it is uppercase.
         #
         def upcase_system_label_value
-          update_attribute("#{system_label_column}", self.send("#{system_label_column}").to_s.upcase)
+          update_attribute("#{acts_as_label_system_label_column}", self.send("#{acts_as_label_system_label_column}").to_s.upcase)
         end
     
       end
