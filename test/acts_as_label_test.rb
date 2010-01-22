@@ -48,6 +48,11 @@ def setup_db
   
   BillingFrequency.create!({ :system_label => "MONTHLY",    :label => "Monthly" })
   BillingFrequency.create!({ :system_label => "QUARTERLY",  :label => "Quarterly" })
+  BillingFrequency.create!({ :system_label => "YEARLY",     :label => "Yearly" })
+  
+  TaxFrequency.create!({ :system_label => "MONTHLY",    :label => "Monthly" })
+  TaxFrequency.create!({ :system_label => "QUARTERLY",  :label => "Quarterly" })
+  TaxFrequency.create!({ :system_label => "YEARLY",     :label => "Yearly" })
   
   Framework.create!({ :system_name => "RUBY_ON_RAILS",  :name => "Rails" })
   Framework.create!({ :system_name => "DJANGO",         :name => "Django" })
@@ -83,6 +88,13 @@ end
 
 # BillingFrequency (STI extension without default)
 class BillingFrequency < Label
+  validates_uniqueness_of :system_label, :scope => :type
+end
+
+
+# TaxFrequency (STI extension for testing duplicate system labels)
+class TaxFrequency < Label
+  validates_uniqueness_of :system_label, :scope => :type
 end
 
 

@@ -36,7 +36,7 @@ module Coroutine                      #:nodoc:
         # STI Example:
         #
         #   class Label < ActiveRecord::Base
-        #     acts_as_label
+        #     acts_as_label :scoped_to => :type
         #   end
         #
         #   class BillingFrequency < Label
@@ -65,6 +65,7 @@ module Coroutine                      #:nodoc:
           #-------------------------------------------
           # scrub options
           #-------------------------------------------
+          options       = {} unless options.is_a?(Hash)
           system_label  = options.key?(:system_label_column)  ? options[:system_label_column].to_sym  : :system_label
           label         = options.key?(:label_column)         ? options[:label_column].to_sym         : :label
           default       = options.key?(:default)              ? options[:default].to_sym              : nil
@@ -86,8 +87,8 @@ module Coroutine                      #:nodoc:
             
             # Add validations
             validates_presence_of       system_label
-            validates_length_of         system_label,  :maximum => 255
-            validates_format_of         system_label,  :with    => /^[A-Z][_A-Z0-9]*$/
+            validates_length_of         system_label,  :maximum   => 255
+            validates_format_of         system_label,  :with      => /^[A-Z][_A-Z0-9]*$/
             validates_presence_of       label
             validates_length_of         label,         :maximum => 255
             
@@ -105,7 +106,7 @@ module Coroutine                      #:nodoc:
             # Add custom method missing functionality to perform find by system label lookup. If 
             # nothing is found, it delegates the call to the original method_missing.
             def self.method_missing_with_label(method, *args, &block)
-              record = self.find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", method.to_s.upcase])
+              record =  self.find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", method.to_s.upcase])
               if record
                 return record
               else
