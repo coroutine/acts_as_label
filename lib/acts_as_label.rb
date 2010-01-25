@@ -68,6 +68,7 @@ module Coroutine                      #:nodoc:
           options       = {} unless options.is_a?(Hash)
           system_label  = options.key?(:system_label_column)  ? options[:system_label_column].to_sym  : :system_label
           label         = options.key?(:label_column)         ? options[:label_column].to_sym         : :label
+          scope         = options.key?(:scope)                ? options[:scope]                       : "1 = 1"
           default       = options.key?(:default)              ? options[:default].to_sym              : nil
                     
           
@@ -81,6 +82,8 @@ module Coroutine                      #:nodoc:
             class_inheritable_reader    :acts_as_label_system_label_column
             write_inheritable_attribute :acts_as_label_label_column,          label
             class_inheritable_reader    :acts_as_label_label_column
+            write_inheritable_attribute :acts_as_label_scope,                 scope
+            class_inheritable_reader    :acts_as_label_scope
             write_inheritable_attribute :acts_as_label_default_system_label,  default
             class_inheritable_reader    :acts_as_label_default_system_label
           
@@ -91,9 +94,6 @@ module Coroutine                      #:nodoc:
             validates_format_of         system_label,  :with      => /^[A-Z][_A-Z0-9]*$/
             validates_presence_of       label
             validates_length_of         label,         :maximum => 255
-            
-            # Add callbacks
-            before_validation           :upcase_system_label_value
             
             
             # Add method missing, if needed
@@ -143,21 +143,20 @@ module Coroutine                      #:nodoc:
     
       module InstanceMethods
       
+        # This method updates the system label attribute writer to ensure it is uppercase.
+        #
+        def system_label=(value)
+          value = value.to_s.strip.upcase unless value.nil?
+          write_attribute("#{acts_as_label_system_label_column}", value)
+        end
+        
+        
         # This method overrides the to_s method to return the friendly label value.
         #
         def to_s
           self.send("#{acts_as_label_label_column}")
         end
-      
-      
-        private
-      
-        # This method updates the system label attribute to ensure it is uppercase.
-        #
-        def upcase_system_label_value
-          update_attribute("#{acts_as_label_system_label_column}", self.send("#{acts_as_label_system_label_column}").to_s.upcase)
-        end
-    
+        
       end
     
     end
