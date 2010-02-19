@@ -109,7 +109,7 @@ end
 # Tests
 #---------------------------------------------------------
 
-class ActsAsLabelTest < Test::Unit::TestCase
+class ActsAsLabelTest < ActiveSupport::TestCase
 
   #---------------------------------------------
   # setup and teardown delegations
