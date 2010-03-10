@@ -1,0 +1,84 @@
+--- !ruby/object:Gem::Specification 
+name: acts_as_label
+version: !ruby/object:Gem::Version 
+  prerelease: false
+  segments: 
+  - 0
+  - 1
+  - 1
+  version: 0.1.1
+platform: ruby
+authors: 
+- John Dugan
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2010-03-10 00:00:00 -06:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: activesupport
+  prerelease: false
+  requirement: &id001 !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        segments: 
+        - 0
+        version: "0"
+  type: :runtime
+  version_requirements: *id001
+description: This acts_as extension implements a system label and a friendly label on a class and centralizes the logic for performing validations and accessing items by system label.
+email: jdugan@coroutine.com
+executables: []
+
+extensions: []
+
+extra_rdoc_files: 
+- README.rdoc
+files: 
+- .gitignore
+- MIT-LICENSE
+- README.rdoc
+- Rakefile
+- VERSION
+- acts_as_label.gemspec
+- init.rb
+- lib/acts_as_label.rb
+- test/acts_as_label_test.rb
+- test/test_helper.rb
+has_rdoc: true
+homepage: http://github.com/coroutine/acts_as_label
+licenses: []
+
+post_install_message: 
+rdoc_options: 
+- --charset=UTF-8
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      segments: 
+      - 0
+      version: "0"
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      segments: 
+      - 0
+      version: "0"
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.6
+signing_key: 
+specification_version: 3
+summary: Gem version of acts_as_label Rails plugin.
+test_files: 
+- test/acts_as_label_test.rb
+- test/test_helper.rb
+
