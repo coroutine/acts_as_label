@@ -88,6 +88,10 @@ module Coroutine                      #:nodoc:
             class_inheritable_reader    :acts_as_label_default_system_label
           
             
+            # protect attributes
+            attr_readonly               system_label
+            
+            
             # Add validations
             validates_presence_of       system_label
             validates_length_of         system_label,  :maximum   => 255

@@ -6,6 +6,13 @@
 This acts_as extension implements a system label and a friendly label on a class and centralizes
 the logic for performing validations and accessing items by system label.
 
+The extension is particularly useful for tabled, enumerated lists.  
+
+The system label is declared as a read-only attribute, allowing models and controllers to code 
+to the value safely, secure in the knowledge that the value will never change.  
+
+The friendly value can be changed to any value required by the end-user without affecting the 
+model/controller code in any way.
 
 
 == Usage
@@ -40,6 +47,28 @@ record is by implementing a class method on the subclass.
       BillingFrequency.monthly
     end
   end
+
+
+The extension also allows records to be access by system label as though the system label were 
+a class method.  The default option can be accessed in a similar manner using the class 
+method +default+.  This yields more expressive code.
+
+  class Role < ActiveRecord::Base
+    has_many :users  
+
+    acts_as_label :default => :guest
+  end
+
+  class User < ActiveRecord::Base
+    belongs_to :role
+  end
+
+  Role.create!({ :system_label => "SUPERUSER", :label => "Superuser"} )
+  Role.create!({ :system_label => "GUEST",      :label => "Guest"} )
+
+  User.create!({ :name => "John Dugan",     :role => Role.superuser })
+  User.create!({ :name => "Anonymous Dude", :role => Role.default })
+	
 
 
 

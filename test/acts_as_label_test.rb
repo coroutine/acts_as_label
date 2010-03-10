@@ -242,6 +242,39 @@ class ActsAsLabelTest < ActiveSupport::TestCase
   
   
   #---------------------------------------------
+  # test validations
+  #---------------------------------------------
+  
+  def test_system_label_is_readonly
+    
+    # build valid record
+    record = Role.new({ :system_label => "CUSTOMER",  :label => "Client" })
+    assert record.valid?
+    
+    # save it and remember id and system label
+    record.save
+    id           = record.id
+    system_label = record.system_label
+    
+    # system label unchanged on safe update
+    record.label  = "Customer"
+    record.save
+    record = Role.find(id)                            # we have to get the record again to verify what's in the db
+    assert_equal system_label, record.system_label
+    
+    # system_label unchanged on unsafe update
+    record.system_label = "CLIENT"
+    record.label        = "Client"
+    record.save
+    record = Role.find(id)                            # we have to get the record again to verify what's in the db
+    assert_equal "Client", record.label
+    assert_equal system_label, record.system_label
+    
+  end
+  
+  
+  
+  #---------------------------------------------
   # test instance methods
   #---------------------------------------------
   
