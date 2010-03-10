@@ -1,6 +1,7 @@
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
+require 'jeweler'
 
 
 desc 'Default: run tests.'
@@ -23,3 +24,20 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+
+begin
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name              = "acts_as_label"
+    gemspec.summary           = "Gem version of acts_as_label Rails plugin."
+    gemspec.description       = "This acts_as extension implements a system label and a friendly label on a class and centralizes the logic for performing validations and accessing items by system label."
+    gemspec.email             = "jdugan@coroutine.com"
+    gemspec.homepage          = "http://github.com/coroutine/acts_as_label"
+    gemspec.authors           = ["John Dugan"]
+    gemspec.add_dependency "activesupport"
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+end
+
