@@ -28,13 +28,15 @@ end
 
 begin
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name              = "acts_as_label"
-    gemspec.summary           = "Gem version of acts_as_label Rails plugin."
+    gemspec.authors           = ["Coroutine", "John Dugan"]
     gemspec.description       = "This acts_as extension implements a system label and a friendly label on a class and centralizes the logic for performing validations and accessing items by system label."
     gemspec.email             = "jdugan@coroutine.com"
     gemspec.homepage          = "http://github.com/coroutine/acts_as_label"
-    gemspec.authors           = ["Coroutine", "John Dugan"]
-    gemspec.add_dependency "activesupport"
+    gemspec.name              = "acts_as_label"
+    gemspec.summary           = "Gem version of acts_as_label Rails plugin."
+    
+    gemspec.add_dependency("activesupport")
+    gemspec.files.include("lib/**/*.rb")
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError

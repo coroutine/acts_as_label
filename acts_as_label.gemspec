@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{acts_as_label}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Coroutine", "John Dugan"]
-  s.date = %q{2010-03-10}
+  s.date = %q{2010-03-25}
   s.description = %q{This acts_as extension implements a system label and a friendly label on a class and centralizes the logic for performing validations and accessing items by system label.}
   s.email = %q{jdugan@coroutine.com}
   s.extra_rdoc_files = [
@@ -25,13 +25,14 @@ Gem::Specification.new do |s|
      "acts_as_label.gemspec",
      "init.rb",
      "lib/acts_as_label.rb",
+     "lib/acts_as_label/base.rb",
      "test/acts_as_label_test.rb",
      "test/test_helper.rb"
   ]
   s.homepage = %q{http://github.com/coroutine/acts_as_label}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.5}
   s.summary = %q{Gem version of acts_as_label Rails plugin.}
   s.test_files = [
     "test/acts_as_label_test.rb",
