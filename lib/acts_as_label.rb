@@ -7,4 +7,4 @@ require File.dirname(__FILE__) + "/acts_as_label/base"
 
 
 # add extensions to active record
-::ActiveRecord::Base.send :include, Coroutine::ActsAsLabel::Base
+::ActiveRecord::Base.send(:include, Coroutine::ActsAsLabel::Base)

@@ -35,6 +35,7 @@ begin
     gemspec.name              = "acts_as_label"
     gemspec.summary           = "Gem version of acts_as_label Rails plugin."
     
+    gemspec.add_dependency("activerecord")
     gemspec.add_dependency("activesupport")
     gemspec.files.include("lib/**/*.rb")
   end
