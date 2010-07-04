@@ -161,6 +161,15 @@ module Coroutine                      #:nodoc:
           self.send("#{acts_as_label_label_column}")
         end
         
+        
+        # This method overrides the to_sym method to return the downcased symbolized 
+        # system label value.  This method is particularly useful in conjunction with
+        # role-based authorization systems.
+        #
+        def to_sym
+          self.send("#{acts_as_label_system_label_column}").downcase.to_sym
+        end
+        
       end
     
     end

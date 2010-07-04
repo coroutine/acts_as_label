@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{acts_as_label}
-  s.version = "0.1.5"
+  s.version = "0.1.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Coroutine", "John Dugan"]
-  s.date = %q{2010-03-25}
+  s.date = %q{2010-07-04}
   s.description = %q{This acts_as extension implements a system label and a friendly label on a class and centralizes the logic for performing validations and accessing items by system label.}
   s.email = %q{jdugan@coroutine.com}
   s.extra_rdoc_files = [

@@ -283,6 +283,10 @@ class ActsAsLabelTest < ActiveSupport::TestCase
     assert_equal role.label, role.to_s
   end
   
+  def test_to_sym
+    role = Role.first
+    assert_equal role.system_label.downcase.to_sym, role.to_sym
+  end
   
   def test_upcase_system_label_value
     record = Role.create!({ :system_label => "Customer",  :label => "Client" })
