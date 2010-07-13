@@ -109,8 +109,14 @@ module Coroutine                      #:nodoc:
             
             # Add custom method missing functionality to perform find by system label lookup. If 
             # nothing is found, it delegates the call to the original method_missing.
+            #
+            # The method attempts rails 3 syntax. If that fails, it reverts to rails 2 syntax.
             def self.method_missing_with_label(method, *args, &block)
-              record =  self.find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", method.to_s.upcase])
+              begin
+                record = self.where("#{acts_as_label_system_label_column} = ?", method.to_s.upcase).first
+              rescue
+                record =  self.find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", method.to_s.upcase])
+              end
               if record
                 return record
               else

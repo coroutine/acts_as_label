@@ -35,8 +35,8 @@ begin
     gemspec.name              = "acts_as_label"
     gemspec.summary           = "Gem version of acts_as_label Rails plugin."
     
-    gemspec.add_dependency("activerecord")
-    gemspec.add_dependency("activesupport")
+    gemspec.add_dependency("activerecord", ">=2.3.4")
+    gemspec.add_development_dependency("activesupport", ">=2.3.4")
     gemspec.files.include("lib/**/*.rb")
   end
   Jeweler::GemcutterTasks.new

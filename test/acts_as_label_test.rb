@@ -212,17 +212,28 @@ class ActsAsLabelTest < ActiveSupport::TestCase
   
   def test_method_missing_accessors
     
+    # lookup database objects using syntax appropriate for version of rails
+    begin
+      role_superuser  = Role.where("system_label = ?", "SUPERUSER").first
+      role_guest      = Role.where("system_label = ?", "GUEST").first
+      framework_rails = Framework.where("system_name = ?", "RUBY_ON_RAILS").first
+    rescue
+      role_superuser  = Role.find(:first, :conditions => ["system_label = ?", "SUPERUSER"])
+      role_guest      = Role.find(:first, :conditions => ["system_label = ?", "GUEST"])
+      framework_rails = Framework.find(:first, :conditions => ["system_name = ?", "RUBY_ON_RAILS"])
+    end
+    
     # test lookup by system label
-    assert_equal Role.find(:first, :conditions => ["system_label = ?", "SUPERUSER"]), Role.superuser
+    assert_equal role_superuser, Role.superuser
     
     # test default with implemented method
-    assert_equal Role.find(:first, :conditions => ["system_label = ?", "GUEST"]), Role.default
+    assert_equal role_guest, Role.default
     
     # test default with unspecified behavior
     assert_equal BillingFrequency.first, BillingFrequency.default
     
     # test default with specified system label
-    assert_equal Framework.find(:first, :conditions => ["system_name = ?", "RUBY_ON_RAILS"]), Framework.default
+    assert_equal framework_rails, Framework.default
     
   end
   
