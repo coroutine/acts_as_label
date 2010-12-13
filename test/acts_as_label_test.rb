@@ -3,7 +3,7 @@
 #---------------------------------------------------------
 
 # all generic requirements are in the helper
-require "test/test_helper"
+require "test_helper"
 
 
 
