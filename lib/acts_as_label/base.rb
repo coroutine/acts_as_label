@@ -112,9 +112,9 @@ module Coroutine                      #:nodoc:
             #
             # The method attempts rails 3 syntax. If that fails, it reverts to rails 2 syntax.
             def self.method_missing_with_label(method, *args, &block)
-              begin
+              if self.respond_to?(:where)
                 record = self.where("#{acts_as_label_system_label_column} = ?", method.to_s.upcase).first
-              rescue
+              else
                 record =  self.find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", method.to_s.upcase])
               end
               if record
@@ -152,7 +152,7 @@ module Coroutine                      #:nodoc:
 
     
       module InstanceMethods
-      
+        
         # This method updates the system label attribute writer to ensure it is uppercase.
         #
         def system_label=(value)
