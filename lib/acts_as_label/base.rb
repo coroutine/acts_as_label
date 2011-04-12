@@ -106,19 +106,41 @@ module Coroutine                      #:nodoc:
                 super
               end
             end
-            
-            # Add custom method missing functionality to perform find by system label lookup. If 
-            # nothing is found, it delegates the call to the original method_missing.
-            #
-            # The method attempts rails 3 syntax. If that fails, it reverts to rails 2 syntax.
-            def self.method_missing_with_label(method, *args, &block)
-              if self.respond_to?(:where)
-                record = self.where("#{acts_as_label_system_label_column} = ?", method.to_s.upcase).first
+
+            # Returns label by system label 
+            def self.by_system_label(system_label)
+              sl = system_label.to_s.upcase
+              
+              if @by_system_label_has_arel ||= ActiveRecord::Base.respond_to?(:where)
+                where("#{acts_as_label_system_label_column} = ?", sl).first
               else
-                record =  self.find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", method.to_s.upcase])
+                find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", sl])
               end
-              if record
-                return record
+            end
+            
+            # Returns true if we have a method with this name that accesses a label,
+            # which is really functionality only method_missing cares about.
+            def self.has_acts_as_label_method?(method_name)
+              system_val = method_name.to_s.upcase
+              
+              if record = by_system_label(system_val)
+                eval %Q{
+                  class << self
+                    def #{method_name.to_s}
+                      @__acts_as_label_memo_for_#{system_val.gsub(/\s/, '_')} ||= by_system_label('#{system_val}')
+                    end
+                  end
+                }
+              end
+              
+              !!record
+            end
+            
+            # Check to see if there's a label for this method first (by system label), if
+            # not, pass the functionality back to the next method in the chain.
+            def self.method_missing_with_label(method, *args, &block)
+              if has_acts_as_label_method?(method)
+                self.__send__(method)
               else
                 method_missing_without_label(method, *args, &block)
               end
@@ -128,7 +150,20 @@ module Coroutine                      #:nodoc:
             class << self
               alias_method_chain :method_missing, :label       
             end
-               
+            
+            def self.respond_to_with_label?(method)
+              (has_acts_as_label_method?(method) rescue nil) || respond_to_without_label?(method)
+            end
+            
+            class << self
+              alias_method_chain :respond_to?, :label
+            end
+            
+            # Returns the value for the system label column
+            def system_label_value
+              send(system_label)
+            end
+
             # Add class method to return default record, if needed
             unless self.method_defined? :default
               if default.nil?

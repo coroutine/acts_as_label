@@ -59,7 +59,6 @@ def teardown_db
 end
 
 
-
 #---------------------------------------------------------
 # Model definitions
 #---------------------------------------------------------
@@ -96,7 +95,6 @@ class Framework < ActiveRecord::Base
 end
 
 
-
 #---------------------------------------------------------
 # Tests
 #---------------------------------------------------------
@@ -113,8 +111,6 @@ class ActsAsLabelTest < ActiveSupport::TestCase
   def teardown
     teardown_db
   end
-
-
 
   #---------------------------------------------
   # test validations
@@ -223,8 +219,14 @@ class ActsAsLabelTest < ActiveSupport::TestCase
       framework_rails = Framework.find(:first, :conditions => ["system_name = ?", "RUBY_ON_RAILS"])
     end
     
+    # Won't have a method now
+    assert !Role.methods.include?("superuser")
+    
     # test lookup by system label
     assert_equal role_superuser, Role.superuser
+    
+    # should have a method now
+    assert Role.methods.include?("superuser")
     
     # test default with implemented method
     assert_equal role_guest, Role.default
@@ -235,8 +237,10 @@ class ActsAsLabelTest < ActiveSupport::TestCase
     # test default with specified system label
     assert_equal framework_rails, Framework.default
     
+    # respond_to will work too
+    assert Role.respond_to?(:guest)
+    assert !Role.respond_to?(:non_existant_role)
   end
-  
   
   def test_method_missing_finders
     
