@@ -136,13 +136,15 @@ module Coroutine                      #:nodoc:
               !!record
             end
             
-            # Check to see if there's a label for this method first (by system label), if
-            # not, pass the functionality back to the next method in the chain.
             def self.method_missing(method, *args, &block)
-              if has_acts_as_label_method?(method)
-                self.__send__(method)
-              else
+              begin
                 super
+              rescue NoMethodError => e
+                if has_acts_as_label_method?(method)
+                  self.__send__(method)
+                else
+                  throw e
+                end
               end
             end
             
