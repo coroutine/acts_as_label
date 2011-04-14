@@ -8,8 +8,6 @@ require "test/unit"
 # require plugin
 require "#{File.dirname(__FILE__)}/../init"
 
-
-
 #----------------------------------------------------------
 # Define global methods
 #----------------------------------------------------------

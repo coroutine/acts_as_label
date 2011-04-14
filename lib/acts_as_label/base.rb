@@ -138,26 +138,18 @@ module Coroutine                      #:nodoc:
             
             # Check to see if there's a label for this method first (by system label), if
             # not, pass the functionality back to the next method in the chain.
-            def self.method_missing_with_label(method, *args, &block)
+            def self.method_missing(method, *args, &block)
               if has_acts_as_label_method?(method)
                 self.__send__(method)
               else
-                method_missing_without_label(method, *args, &block)
+                super
               end
             end
             
-            # Add method missing alias
-            class << self
-              alias_method_chain :method_missing, :label       
-            end
-            
-            def self.respond_to_with_label?(method)
-              (has_acts_as_label_method?(method) rescue nil) || respond_to_without_label?(method)
-            end
-            
-            class << self
-              alias_method_chain :respond_to?, :label
-            end
+            # # Add method missing alias
+            # class << self
+            #   alias_method_chain :method_missing, :label       
+            # end
             
             # Returns the value for the system label column
             def system_label_value

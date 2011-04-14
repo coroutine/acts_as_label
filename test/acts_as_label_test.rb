@@ -5,15 +5,12 @@
 # all generic requirements are in the helper
 require "test_helper"
 
-
-
 #---------------------------------------------------------
 # Database config
 #---------------------------------------------------------
 
 # establish db connection
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
-
 
 # define and seed tables
 def setup_db
@@ -236,10 +233,6 @@ class ActsAsLabelTest < ActiveSupport::TestCase
     
     # test default with specified system label
     assert_equal framework_rails, Framework.default
-    
-    # respond_to will work too
-    assert Role.respond_to?(:guest)
-    assert !Role.respond_to?(:non_existant_role)
   end
   
   def test_method_missing_finders
