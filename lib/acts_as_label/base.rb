@@ -148,11 +148,6 @@ module Coroutine                      #:nodoc:
               end
             end
             
-            # # Add method missing alias
-            # class << self
-            #   alias_method_chain :method_missing, :label       
-            # end
-            
             # Returns the value for the system label column
             def system_label_value
               send(system_label)
@@ -170,7 +165,6 @@ module Coroutine                      #:nodoc:
                 end
               end
             end
-            
             
             # Add all the instance methods
             include Coroutine::ActsAsLabel::Base::InstanceMethods
