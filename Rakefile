@@ -28,7 +28,7 @@ end
 
 begin
   Jeweler::Tasks.new do |gemspec|
-    gemspec.authors           = ["Coroutine", "John Dugan"]
+    gemspec.authors           = ["Coroutine", "John Dugan", "Rick Branson"]
     gemspec.description       = "This acts_as extension implements a system label and a friendly label on a class and centralizes the logic for performing validations and accessing items by system label."
     gemspec.email             = "jdugan@coroutine.com"
     gemspec.homepage          = "http://github.com/coroutine/acts_as_label"

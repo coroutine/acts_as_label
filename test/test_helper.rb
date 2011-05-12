@@ -2,12 +2,11 @@
 require "rubygems"
 require "active_support"
 require "active_support/test_case"
+require "active_record"
 require "test/unit"
 
 # require plugin
 require "#{File.dirname(__FILE__)}/../init"
-
-
 
 #----------------------------------------------------------
 # Define global methods
