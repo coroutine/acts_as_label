@@ -5,6 +5,7 @@
 # all generic requirements are in the helper
 require "test_helper"
 
+
 #---------------------------------------------------------
 # Database config
 #---------------------------------------------------------
@@ -223,7 +224,7 @@ class ActsAsLabelTest < ActiveSupport::TestCase
     assert_equal role_superuser, Role.superuser
     
     # should have a method now
-    assert Role.methods.include?("superuser")
+    assert Role.methods.include?(:superuser)
     
     # test default with implemented method
     assert_equal role_guest, Role.default
@@ -297,8 +298,15 @@ class ActsAsLabelTest < ActiveSupport::TestCase
   end
   
   def test_upcase_system_label_value
+    
+    # default system label column name
     record = Role.create!({ :system_label => "Customer",  :label => "Client" })
     assert_equal record.system_label, "CUSTOMER"
+    
+    # custom system label column name
+    record = Framework.create!( :system_name => "example", :name => "Example")
+    assert_equal record.system_name, "EXAMPLE"
+    
   end
 
 end

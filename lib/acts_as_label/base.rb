@@ -136,6 +136,8 @@ module Coroutine                      #:nodoc:
               !!record
             end
             
+            # Tries method missing first, if no method found it determines
+            # whether or not there's a system label for the requested method.
             def self.method_missing(method, *args, &block)
               begin
                 super
@@ -148,11 +150,6 @@ module Coroutine                      #:nodoc:
               end
             end
             
-            # Returns the value for the system label column
-            def system_label_value
-              send(system_label)
-            end
-
             # Add class method to return default record, if needed
             unless self.method_defined? :default
               if default.nil?
@@ -166,6 +163,12 @@ module Coroutine                      #:nodoc:
               end
             end
             
+            # Redefine system label column write to force upcasing of value.
+            define_method("#{acts_as_label_system_label_column}=") do |value| 
+              value = value.to_s.strip.upcase unless value.nil?
+              write_attribute("#{acts_as_label_system_label_column}", value)
+            end
+            
             # Add all the instance methods
             include Coroutine::ActsAsLabel::Base::InstanceMethods
 
@@ -176,14 +179,7 @@ module Coroutine                      #:nodoc:
     
       module InstanceMethods
         
-        # This method updates the system label attribute writer to ensure it is uppercase.
-        #
-        def system_label=(value)
-          value = value.to_s.strip.upcase unless value.nil?
-          write_attribute("#{acts_as_label_system_label_column}", value)
-        end
-        
-        
+        def system_label_column_name
         # This method overrides the to_s method to return the friendly label value.
         #
         def to_s
@@ -196,7 +192,7 @@ module Coroutine                      #:nodoc:
         # role-based authorization systems.
         #
         def to_sym
-          self.send("#{acts_as_label_system_label_column}").downcase.to_sym
+          self.send("#{acts_as_label_system_label_column}").underscore.to_sym
         end
         
       end
