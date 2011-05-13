@@ -77,7 +77,7 @@ module Coroutine                      #:nodoc:
           #--------------------------------------------
           class_eval do
             
-            # Add inheritable accessors
+            # inheritable accessors
             write_inheritable_attribute :acts_as_label_system_label_column,   system_label
             class_inheritable_reader    :acts_as_label_system_label_column
             write_inheritable_attribute :acts_as_label_label_column,          label
@@ -92,7 +92,7 @@ module Coroutine                      #:nodoc:
             attr_readonly               system_label
             
             
-            # Add validations
+            # validations
             validates_presence_of       system_label
             validates_length_of         system_label,  :maximum   => 255
             validates_format_of         system_label,  :with      => /^[A-Z][_A-Z0-9]*$/
@@ -100,44 +100,12 @@ module Coroutine                      #:nodoc:
             validates_length_of         label,         :maximum => 255
             
             
-            # Add method missing, if needed
-            unless self.method_defined? :method_missing
-              def self.method_missing(method, *args, &block)
-                super
-              end
-            end
-
-            # Returns label by system label 
-            def self.by_system_label(system_label)
-              sl = system_label.to_s.upcase
-              
-              if @by_system_label_has_arel ||= ActiveRecord::Base.respond_to?(:where)
-                where("#{acts_as_label_system_label_column} = ?", sl).first
-              else
-                find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", sl])
-              end
-            end
             
-            # Returns true if we have a method with this name that accesses a label,
-            # which is really functionality only method_missing cares about.
-            def self.has_acts_as_label_method?(method_name)
-              system_val = method_name.to_s.upcase
-              
-              if record = by_system_label(system_val)
-                eval %Q{
-                  class << self
-                    def #{method_name.to_s}
-                      @__acts_as_label_memo_for_#{system_val.gsub(/\s/, '_')} ||= by_system_label('#{system_val}')
-                    end
-                  end
-                }
-              end
-              
-              !!record
-            end
-            
-            # Tries method missing first, if no method found it determines
-            # whether or not there's a system label for the requested method.
+            # This method catches all undefined method calls. It first sees if any ancestor
+            # understands the request. If not, it tries to match the method call to an
+            # existing system label. If that is found, it lazily manufacturers a method on the
+            # class of the same name. Otherwise, it throws the NoMethodError.
+            #
             def self.method_missing(method, *args, &block)
               begin
                 super
@@ -150,7 +118,46 @@ module Coroutine                      #:nodoc:
               end
             end
             
-            # Add class method to return default record, if needed
+                        
+            # This method determines whether or not the class has an instance with
+            # the given system label. If it does, it also lazily creates a method 
+            # that can be accessed without all this method missing nonsense.
+            #
+            def self.has_acts_as_label_method?(method_name)
+              mn = method_name.to_s.underscore
+              sl = mn.upcase
+              
+              if record = by_acts_as_label_system_label(sl)
+                eval %Q{
+                  class << self
+                    def #{mn}
+                      by_acts_as_label_system_label('#{sl}')
+                    end
+                  end
+                }
+              end
+              
+              !!record
+            end
+            
+            
+            # This method finds an active record object for the given system label.
+            # It automatically determines the correct syntax for the current version
+            # of rails via duck typing.def typing.
+            #             
+            def self.by_acts_as_label_system_label(system_label)
+              sl = system_label.to_s.upcase
+              
+              if @by_system_label_has_arel ||= ActiveRecord::Base.respond_to?(:where)
+                where("#{acts_as_label_system_label_column} = ?", sl).first
+              else
+                find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", sl])
+              end
+            end
+
+
+            # This block adds a class method to return the default record.
+            #
             unless self.method_defined? :default
               if default.nil?
                 def self.default
@@ -162,12 +169,16 @@ module Coroutine                      #:nodoc:
                 end
               end
             end
-            
-            # Redefine system label column write to force upcasing of value.
+
+
+            # This method overrides the system label column writer to force 
+            # upcasing of the value.
+            #
             define_method("#{acts_as_label_system_label_column}=") do |value| 
               value = value.to_s.strip.upcase unless value.nil?
               write_attribute("#{acts_as_label_system_label_column}", value)
             end
+                          
             
             # Add all the instance methods
             include Coroutine::ActsAsLabel::Base::InstanceMethods
@@ -179,7 +190,16 @@ module Coroutine                      #:nodoc:
     
       module InstanceMethods
         
-        def system_label_column_name
+        # This method overrides to_ary to return nil, which tells anything trying to
+        # flatten this we are already flat. This is necessary because we are overriding
+        # active records method missing, which must do this somewhere in the bowels
+        # of rails.
+        #
+        def to_ary
+          nil
+        end
+        
+        
         # This method overrides the to_s method to return the friendly label value.
         #
         def to_s
@@ -188,11 +208,21 @@ module Coroutine                      #:nodoc:
         
         
         # This method overrides the to_sym method to return the downcased symbolized 
-        # system label value.  This method is particularly useful in conjunction with
+        # system label value. This method is particularly useful in conjunction with
         # role-based authorization systems.
         #
         def to_sym
           self.send("#{acts_as_label_system_label_column}").underscore.to_sym
+        end
+        
+        
+        # This method compares two values by running to_sym on both sides.  This allows
+        # comparisons like the following:
+        #   u.role == Role.superuser
+        #   u.role == :superuser
+        #
+        def ==(other)
+          self.to_sym == other.to_sym
         end
         
       end

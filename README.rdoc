@@ -70,6 +70,19 @@ method +default+.  This yields more expressive code.
   User.create!({ :name => "Anonymous Dude", :role => Role.default })
 	
 
+To help avoid excessive querying, the extension overrides the equality operator. 
+This allows record comparisons in a couple of formats:
+
+  u.role == Role.superuser	# as you would expect
+  u.role == :superuser		# to spare a superfluous query (same as u.role.to_sym == :superuser)
+
+
+Other useful utility methods:
+
++to_s+:: Returns the friendly label value
++to_sym+:: Returns the downcased, symbolized system label value 
+
+
 
 == Helpful Links
 

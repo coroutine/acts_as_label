@@ -210,6 +210,7 @@ class ActsAsLabelTest < ActiveSupport::TestCase
     begin
       role_superuser  = Role.where("system_label = ?", "SUPERUSER").first
       role_guest      = Role.where("system_label = ?", "GUEST").first
+      role_fresh      = Role.create!(:system_label => "FRESH", :label => "Fresh")
       framework_rails = Framework.where("system_name = ?", "RUBY_ON_RAILS").first
     rescue
       role_superuser  = Role.find(:first, :conditions => ["system_label = ?", "SUPERUSER"])
@@ -218,13 +219,13 @@ class ActsAsLabelTest < ActiveSupport::TestCase
     end
     
     # Won't have a method now
-    assert !Role.methods.include?("superuser")
+    assert !Role.methods.map(&:to_s).include?("fresh")  # some rubies report strings, some symbols
     
     # test lookup by system label
-    assert_equal role_superuser, Role.superuser
+    assert_equal role_fresh, Role.fresh
     
     # should have a method now
-    assert Role.methods.include?(:superuser)
+    assert Role.methods.map(&:to_s).include?("fresh")   # some rubies report strings, some symbols
     
     # test default with implemented method
     assert_equal role_guest, Role.default
@@ -286,6 +287,13 @@ class ActsAsLabelTest < ActiveSupport::TestCase
   #---------------------------------------------
   # test instance methods
   #---------------------------------------------
+  
+  def test_equality
+    r1 = Role.superuser
+    
+    assert (r1 == Role.superuser)
+    assert (r1 == :superuser)
+  end
   
   def test_to_s
     role = Role.first
