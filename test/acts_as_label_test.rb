@@ -293,6 +293,8 @@ class ActsAsLabelTest < ActiveSupport::TestCase
     
     assert (r1 == Role.superuser)
     assert (r1 == :superuser)
+    
+    assert !(r1 == false)
   end
   
   def test_to_s
