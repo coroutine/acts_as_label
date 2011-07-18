@@ -222,7 +222,7 @@ module Coroutine                      #:nodoc:
         #   u.role == :superuser
         #
         def ==(other)
-          self.to_sym == other.to_sym
+          self.to_sym == (other.to_sym rescue false)
         end
         
       end
