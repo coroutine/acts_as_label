@@ -293,6 +293,8 @@ class ActsAsLabelTest < ActiveSupport::TestCase
     
     assert (r1 == Role.superuser)
     assert (r1 == :superuser)
+    
+    assert !(r1 == false)
   end
   
   def test_to_s
@@ -306,7 +308,6 @@ class ActsAsLabelTest < ActiveSupport::TestCase
   end
   
   def test_upcase_system_label_value
-    
     # default system label column name
     record = Role.create!({ :system_label => "Customer",  :label => "Client" })
     assert_equal record.system_label, "CUSTOMER"
@@ -314,7 +315,11 @@ class ActsAsLabelTest < ActiveSupport::TestCase
     # custom system label column name
     record = Framework.create!( :system_name => "example", :name => "Example")
     assert_equal record.system_name, "EXAMPLE"
-    
+  end
+
+  def test_support_upcase_accessors
+    assert Role.SUPERUSER == Role.superuser
+    assert Role.SUPERUSER == :superuser
   end
 
 end

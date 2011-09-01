@@ -1,6 +1,6 @@
 require "rake"
 require "rake/testtask"
-require "rake/rdoctask"
+require "rdoc/task"
 require "jeweler"
 
 
@@ -35,8 +35,8 @@ begin
     gemspec.name              = "acts_as_label"
     gemspec.summary           = "Gem version of acts_as_label Rails plugin."
     
-    gemspec.add_dependency("activerecord", ">=2.3.4")
-    gemspec.add_development_dependency("activesupport", ">=2.3.4")
+    gemspec.add_dependency("activerecord", ">=3.0.0")
+    gemspec.add_development_dependency("activesupport", ">=3.0.0")
     gemspec.files.include("lib/**/*.rb")
   end
   Jeweler::GemcutterTasks.new
