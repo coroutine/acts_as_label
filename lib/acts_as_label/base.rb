@@ -78,19 +78,18 @@ module Coroutine                      #:nodoc:
           class_eval do
             
             # inheritable accessors
-            write_inheritable_attribute :acts_as_label_system_label_column,   system_label
-            class_inheritable_reader    :acts_as_label_system_label_column
-            write_inheritable_attribute :acts_as_label_label_column,          label
-            class_inheritable_reader    :acts_as_label_label_column
-            write_inheritable_attribute :acts_as_label_scope,                 scope
-            class_inheritable_reader    :acts_as_label_scope
-            write_inheritable_attribute :acts_as_label_default_system_label,  default
-            class_inheritable_reader    :acts_as_label_default_system_label
-          
-            
+            class_attribute :acts_as_label_system_label_column
+            class_attribute :acts_as_label_label_column
+            class_attribute :acts_as_label_scope
+            class_attribute :acts_as_label_default_system_label
+
+            self.acts_as_label_system_label_column  = system_label
+            self.acts_as_label_label_column         = label
+            self.acts_as_label_scope                = scope
+            self.acts_as_label_default_system_label = default
+
             # protect attributes
             attr_readonly               system_label
-            
             
             # validations
             validates_presence_of       system_label
@@ -98,8 +97,6 @@ module Coroutine                      #:nodoc:
             validates_format_of         system_label,  :with      => /^[A-Z][_A-Z0-9]*$/
             validates_presence_of       label
             validates_length_of         label,         :maximum => 255
-            
-            
             
             # This method catches all undefined method calls. It first sees if any ancestor
             # understands the request. If not, it tries to match the method call to an
@@ -133,6 +130,8 @@ module Coroutine                      #:nodoc:
                     def #{mn}
                       by_acts_as_label_system_label('#{sl}')
                     end
+                    
+                    alias_method :#{mn.upcase}, :#{mn}
                   end
                 }
               end
@@ -142,17 +141,9 @@ module Coroutine                      #:nodoc:
             
             
             # This method finds an active record object for the given system label.
-            # It automatically determines the correct syntax for the current version
-            # of rails via duck typing.def typing.
             #             
             def self.by_acts_as_label_system_label(system_label)
-              sl = system_label.to_s.upcase
-              
-              if @by_system_label_has_arel ||= ActiveRecord::Base.respond_to?(:where)
-                where("#{acts_as_label_system_label_column} = ?", sl).first
-              else
-                find(:first, :conditions => ["#{acts_as_label_system_label_column} = ?", sl])
-              end
+              where("#{acts_as_label_system_label_column} = ?", system_label.to_s.upcase).first
             end
 
 
