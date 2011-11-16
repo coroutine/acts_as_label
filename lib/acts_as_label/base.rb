@@ -110,7 +110,7 @@ module Coroutine                      #:nodoc:
                 if has_acts_as_label_method?(method)
                   self.__send__(method)
                 else
-                  throw e
+                  raise e
                 end
               end
             end
