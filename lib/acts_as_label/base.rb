@@ -94,7 +94,7 @@ module Coroutine                      #:nodoc:
             # validations
             validates_presence_of       system_label
             validates_length_of         system_label,  :maximum   => 255
-            validates_format_of         system_label,  :with      => /^[A-Z][_A-Z0-9]*$/
+            validates_format_of         system_label,  :with      => /\A[A-Z][_A-Z0-9]*\Z/
             validates_presence_of       label
             validates_length_of         label,         :maximum => 255
             
